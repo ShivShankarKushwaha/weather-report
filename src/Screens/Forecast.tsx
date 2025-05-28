@@ -85,7 +85,7 @@ export const Forecast = () => {
               {new Date(Date.now() + city.timezone * 1000).toLocaleTimeString()}
             </p>
             <p className="text-xs mt-1 text-gray-300">
-              Sunrise: {formatTime(city.sunrise, city.timezone)} | Sunset: {formatTime(city.sunset, city.timezone)}
+              Sunrise: {formatTime(city.sunrise, city.timezone)} | <br className="sm:hidden" /> Sunset: {formatTime(city.sunset, city.timezone)}
             </p>
           </div>
         </div>
