@@ -3,24 +3,55 @@ import { useSelector } from "react-redux";
 import { requestLocationAccess } from "../utils/location";
 import { GetWeatherForecast, GetWeatherForecastByCoords } from "../api";
 import { toast } from "react-toastify";
+import type { RootState } from "../Redux/store";
 
+type ForecastItem = {
+    dt: number;
+    dt_txt: string;
+    main: {
+      temp: number;
+      feels_like: number;
+      humidity: number;
+    };
+    weather: {
+      main: string;
+      description: string;
+      icon: string;
+    }[];
+    wind: {
+      speed: number;
+      deg: number;
+    };
+  };
 
-function formatTime(unix, offset) {
+  type ForecastData = {
+    city: {
+      name: string;
+      country: string;
+      population: number;
+      sunrise: number;
+      sunset: number;
+      timezone: number;
+    };
+    forecasts: ForecastItem[];
+  };
+
+function formatTime(unix:number, offset:number) {
   const date = new Date((unix + offset) * 1000);
   return date.toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" });
 }
 
-function formatDate(dt_txt) {
+function formatDate(dt_txt:string) {
   return new Date(dt_txt).toLocaleDateString("en-US", { weekday: "short", month: "short", day: "numeric" });
 }
 
 export const Forecast = () => {
-  const [data, setData] = useState(null);
-  const [selectedForecast, setSelectedForecast] = useState(null);
-  const location = useSelector((state) => state.location.currentCity);
-  const unit = useSelector((state) =>  state.weatherUnit.unit);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+    const [data, setData] = useState<ForecastData | null>(null);
+    const [selectedForecast, setSelectedForecast] = useState<ForecastItem | null>(null);
+    const location = useSelector((state:RootState) => state.location.currentCity);
+    const unit = useSelector((state:RootState) =>  state.weatherUnit.unit);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchForecast() {
@@ -51,7 +82,7 @@ export const Forecast = () => {
                 setError("Failed to load weather data. Please try again later.");
               }
 
-      const daily = json.list.filter((_, i) => i % 8 === 0);
+      const daily = json.list.filter((_:any, i:number) => i % 8 === 0);
         if (!json || !json.city || !daily.length) {
             setError("Failed to load weather data.");
             setLoading(false);
@@ -69,6 +100,8 @@ export const Forecast = () => {
     return <p className="text-center text-3xl mt-40 animate-bounce">Loading weather...</p>;
   if (error)
     return <p className="text-center text-red-500 mt-40">{error}</p>;
+  if (!data || !selectedForecast) return null;
+
   const { city, forecasts } = data;
 
   return (
@@ -92,30 +125,30 @@ export const Forecast = () => {
 
         <div className="flex items-center justify-between mt-6">
           <div>
-            <p className="uppercase text-sm tracking-widest text-gray-200">{formatDate(selectedForecast.dt_txt)}</p>
-            <h2 className="text-5xl font-semibold">{Math.round(selectedForecast.main.temp)}°C</h2>
-            <p className="text-gray-200 mt-2">Feels like: {Math.round(selectedForecast.main.feels_like)}°</p>
+            <p className="uppercase text-sm tracking-widest text-gray-200">{formatDate(selectedForecast?.dt_txt)}</p>
+            <h2 className="text-5xl font-semibold">{Math.round(selectedForecast?.main.temp)}°C</h2>
+            <p className="text-gray-200 mt-2">Feels like: {Math.round(selectedForecast?.main.feels_like)}°</p>
           </div>
 
           <div className="text-center text-6xl">
             <img
-              src={`https://openweathermap.org/img/wn/${selectedForecast.weather[0].icon}@2x.png`}
+              src={`https://openweathermap.org/img/wn/${selectedForecast?.weather[0]?.icon}@2x.png`}
               alt="icon"
               className="w-20 h-20 mx-auto"
             />
-            <p className="text-sm text-gray-300 mt-1">{selectedForecast.weather[0].description}</p>
+            <p className="text-sm text-gray-300 mt-1">{selectedForecast?.weather[0].description}</p>
           </div>
 
           <div className="text-right text-gray-200 text-sm">
-            <p>Humidity: <br className="sm:hidden" /> {selectedForecast.main.humidity}%</p>
-            <p>Wind:<br className="sm:hidden" /> {selectedForecast.wind.speed} m/s</p>
-            <p>Direction:<br className="sm:hidden" /> {selectedForecast.wind.deg}°</p>
+            <p>Humidity: <br className="sm:hidden" /> {selectedForecast?.main.humidity}%</p>
+            <p>Wind:<br className="sm:hidden" /> {selectedForecast?.wind.speed} m/s</p>
+            <p>Direction:<br className="sm:hidden" /> {selectedForecast?.wind.deg}°</p>
           </div>
         </div>
 
         <div className="border-t border-white/30 mt-10 pt-4 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 text-center">
-          {forecasts.map((d, i) => {
-            const isSelected = selectedForecast.dt === d.dt;
+          {forecasts.map((d:any, i:number) => {
+            const isSelected = selectedForecast?.dt === d.dt;
             return (
               <div
                 key={i}

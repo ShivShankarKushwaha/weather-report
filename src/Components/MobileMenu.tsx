@@ -1,11 +1,27 @@
 import { FaTimes } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import React from "react";
 
-export const MobileSidebar = ({
+type NavLink = {
+  to: string;
+  label: string;
+};
+
+type MobileSidebarProps = {
+  isOpen: boolean;
+  onClose: () => void;
+  navLinks: NavLink[];
+  handleSelectLocation: (location: string) => void;
+  handleUseCurrentLocation: () => void;
+  search: string;
+  setSearch: (value: string) => void;
+  filteredLocations: string[];
+};
+
+export const MobileSidebar: React.FC<MobileSidebarProps> = ({
   isOpen,
   onClose,
   navLinks,
-  selectedLocation,
   handleSelectLocation,
   handleUseCurrentLocation,
   search,
@@ -31,7 +47,7 @@ export const MobileSidebar = ({
         </div>
 
         <div className="flex flex-col gap-4 px-4 p-5 m-0 w-full bg-slate-500 rounded-b-xl">
-          {navLinks.map((link) => (
+          {navLinks.map((link: NavLink) => (
             <Link
               key={link.to}
               to={link.to}
@@ -62,7 +78,7 @@ export const MobileSidebar = ({
 
           <div className="overflow-y-auto max-h-40 scrollbar-thin scrollbar-thumb-gray-300">
             {filteredLocations.length > 0 ? (
-              filteredLocations.map((loc) => (
+              filteredLocations.map((loc: string) => (
                 <button
                   key={loc}
                   onClick={() => {

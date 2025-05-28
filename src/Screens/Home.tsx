@@ -5,12 +5,33 @@ import { toggleUnit } from "../Redux/slices/weatherUnitSlice";
 import { requestLocationAccess } from "../utils/location";
 import { toast } from "react-toastify";
 import { FaLocationPin } from "react-icons/fa6";
+import type { RootState } from "../Redux/store";
+
+type WeatherResponse = {
+    name: string;
+    sys: {
+      country: string;
+    };
+    wind: {
+      speed: number;
+      deg: number;
+    };
+    main: {
+      temp: number;
+      feels_like: number;
+      humidity: number;
+    };
+    weather: {
+      description: string;
+      icon: string;
+    }[];
+  };
 
 export const HomeScreen = () => {
   const dispatch = useDispatch();
-  const unit = useSelector((state) => state.weatherUnit.unit);
-  const location = useSelector((state) => state.location.currentCity);
-  const [weather, setWeather] = useState(null);
+  const unit = useSelector((state:RootState) => state.weatherUnit.unit);
+  const location = useSelector((state:RootState) => state.location.currentCity);
+  const [weather, setWeather] = useState<WeatherResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
@@ -79,7 +100,7 @@ export const HomeScreen = () => {
         <div className="bg-gradient-to-tr from-orange-200 to-yellow-100 rounded-3xl shadow-2xl p-6 flex flex-col justify-center items-center animate-fade-in hover:scale-95 transition-all duration-300 cursor-pointer relative">
             <div className="lg:absolute top-10 right-10 text-slate-600 text-xl flex items-center gap-2">
                 <FaLocationPin/>
-                <span >{name} , {sys.country}</span>
+                <span >{name} , {sys?.country}</span>
             </div>
           <div className="text-2xl font-bold text-gray-800 mb-2 flex items-center gap-2">
             🌡 Temperature
@@ -119,9 +140,9 @@ export const HomeScreen = () => {
       <div className="w-full h-[32vh] bg-gradient-to-tr from-sky-100 to-indigo-100 rounded-3xl shadow-2xl p-6 flex flex-col justify-center items-center animate-slide-up hover:scale-95 transition-all duration-300 cursor-pointer">
         <div className="text-2xl font-bold text-gray-800 mb-2">💨 Wind Speed</div>
         <p className="text-6xl font-bold text-indigo-500 text-center">
-          {wind.speed} {windUnit}
+          {wind?.speed} {windUnit}
         </p>
-        <p className="text-sm text-gray-500 mt-1">Direction: {wind.deg}°</p>
+        <p className="text-sm text-gray-500 mt-1">Direction: {wind?.deg}°</p>
       </div>
     </div>
   );

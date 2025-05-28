@@ -6,13 +6,14 @@ import { setCity } from "../Redux/slices/locationSlice";
 import { MobileSidebar } from "./MobileMenu";
 import { LocationSearch } from "./LocationSearch";
 import { cities } from "../assets/city";
+import type { RootState } from "../Redux/store";
 
 export const NavBar = () => {
   const location = useLocation();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [selectedLocation, setSelectedLocation] = useState<string | null>(null);
-  const currentCity = useSelector((state) => state.location.currentCity);
+  const currentCity = useSelector((state:RootState) => state.location.currentCity);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const dispatch = useDispatch();
@@ -88,7 +89,6 @@ export const NavBar = () => {
             isOpen={isSidebarOpen}
             onClose={() => setIsSidebarOpen(false)}
             navLinks={navLinks}
-            selectedLocation={selectedLocation}
             handleSelectLocation={handleSelectLocation}
             handleUseCurrentLocation={handleUseCurrentLocation}
             search={search}

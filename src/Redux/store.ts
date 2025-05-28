@@ -8,3 +8,5 @@ export const store = configureStore({
     weatherUnit: weatherUnitReducer,
   },
 });
+
+export type RootState = ReturnType<typeof store.getState>;
